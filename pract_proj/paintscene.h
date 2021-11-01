@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
 #include <QDebug>
+#include <QRubberBand>
 
 class paintScene : public QGraphicsScene
 {
@@ -18,16 +19,26 @@ public:
 private:
     QPointF     previousPoint;      // Координаты предыдущей точки
 
-    // ЭТИ ПЕРЕМЕННЫЕ ПЕРЕМЕСТИТЬ В TOOLBAR
+    // ПЕРЕМЕННЫЕ НИЖЕ ПЕРЕМЕСТИТЬ В TOOLBAR
     int chosenInstrument = 0;
     int brushSize = 1;
     Qt::GlobalColor brushColor = Qt::black;
     // ПЕРЕМЕННЫЕ ВЫШЕ ПЕРЕМЕСТИТЬ В TOOLBAR
 
+    int mouseOnPressXPosition = 0;
+    int mouseOnPressYPosition = 0;
+
+    int mouseOnStartMoveXPosition = -1;
+    int mouseOnStartMoveYPosition = -1;
+
+    QRubberBand* rubberBand;
+    QPointF origin;
+
 private:
     // Для рисования используем события мыши
     void mousePressEvent(QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void drawLine(int x, int y);
 
 };
