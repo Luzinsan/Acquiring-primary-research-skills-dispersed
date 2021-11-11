@@ -21,6 +21,7 @@ public:
     explicit Canvas(QObject *parent = 0);
     ~Canvas();
     QPen *pen = new QPen(Qt::black, 2, Qt::SolidLine);
+    QColor previusColor = QColor(Qt::black);
     void setChosenInstrument(int id);
     void loadPicture(QString path);
 
@@ -28,6 +29,7 @@ public:
 
 public slots:
     void setSize(int size);
+
 private:
     QPointF previousPoint;      // Координаты предыдущей точки
 

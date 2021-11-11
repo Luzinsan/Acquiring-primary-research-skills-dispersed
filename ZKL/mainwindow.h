@@ -5,6 +5,9 @@
 #include <QApplication>
 #include <QComboBox>
 #include "canvas.h"
+#include "createfile.h"
+
+
 
 class MainWindow : public QMainWindow
 {
@@ -15,8 +18,15 @@ public:
     QGraphicsView *viewer;
     Canvas *canvas;  // Объявляем кастомную графическую сцену
     QComboBox *combo;
-private slots:
+    CreateFile* newFile = new CreateFile();
+    bool wasEraser = false;
+
+public slots:
     void toggleStatusbar();
+    void setColor();
+    void eraser();
+    void brush();
+
 private:
     QAction *viewst;
 

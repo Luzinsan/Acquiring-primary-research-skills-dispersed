@@ -1,10 +1,11 @@
 #include "mainwindow.h"
-//#include "createfile.h"
+
 //#include "feedback.h"
 
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QColor>
 
 int main(int argc, char *argv[])
 {
@@ -20,16 +21,11 @@ int main(int argc, char *argv[])
         }
     }
     MainWindow window;
+    window.setPalette(QColor("#24178b"));
     window.resize(500, 500);
     window.setWindowTitle("MainWindow!!!");
     window.show();
 /*
-
-
-    CreateFile create;
-    create.resize(500, 300);
-    create.setWindowTitle("CreateFile!!!");
-    create.show();
 
     Feedback feedback;
     feedback.resize(800, 500);

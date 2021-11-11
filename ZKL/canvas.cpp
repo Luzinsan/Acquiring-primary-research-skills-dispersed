@@ -1,6 +1,7 @@
 #include "canvas.h"
 #include <QComboBox>
 #include <QStringList>
+#include <QColor>
 
 /* this->clearSelection();  //СОХРАНЕНИЕ КАРТИНКИ
     this->setSceneRect(this->itemsBoundingRect());
@@ -60,12 +61,9 @@ void Canvas::setChosenInstrument(int id)
 void Canvas::setSize(int size)
 {
     pen->setWidth(size);
-    // Сигнал activated() нашего QComboBox подключается к слоту setText() метки.
-    // Поскольку сигнал перегружен,
-    // то мы делаем статическое преобразование данных при помощи оператора static_cast:
-    //connect(combo, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
-   //         pen, static_cast<void(QPen::*)(int)>(&QPen::setWidth));
 }
+
+
 
 void Canvas::drawLine(int x, int y)
 {
@@ -92,13 +90,14 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     printf("x = %d, y = %d\n", mouseOnPressXPosition, mouseOnPressYPosition);
 
+
     addEllipse(event->scenePos().x(),
                event->scenePos().y(),
                pen->width(),
                pen->width(),
                *pen);
     // Сохраняем координаты точки нажатия
-    previousPoint = event->scenePos();
+    previousPoint = event->scenePos(); Qt::GlobalColor n;
 
    origin = event->pos();
         //if (!rubberBand)

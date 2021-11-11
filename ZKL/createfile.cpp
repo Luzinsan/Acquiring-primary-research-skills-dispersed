@@ -8,7 +8,8 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
-
+#include <QTreeView>
+#include <QFileSystemModel>
 
 
 CreateFile::CreateFile(QWidget *parent) : QWidget(parent)
@@ -16,6 +17,13 @@ CreateFile::CreateFile(QWidget *parent) : QWidget(parent)
     QVBoxLayout *vbox = new QVBoxLayout(this);
     vbox->addStretch(1); // addStretch() вставляем между виджетами промежуток динамического размера
 
+    QFileSystemModel *model = new QFileSystemModel;
+    model->setRootPath(QDir::currentPath());
+    QTreeView *tree = new QTreeView(this);
+    tree->setModel(model);
+
+
+    vbox->addWidget(tree);
     // Формы для заполнения
     // Левый столбец содержит метки, а правый столбец содержит виджеты ввода (однострочные редакторы, счетчики и т.д.).
     QFormLayout *formLayout = new QFormLayout;
@@ -42,3 +50,9 @@ CreateFile::CreateFile(QWidget *parent) : QWidget(parent)
     setLayout(vbox);
 }
 
+void CreateFile::createFile()
+{
+    resize(500, 300);
+    setWindowTitle("CreateFile!!!");
+    show();
+}

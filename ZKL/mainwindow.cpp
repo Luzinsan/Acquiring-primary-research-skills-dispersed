@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "canvas.h"
+#include "createfile.h"
+#include <QColorDialog>
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -14,28 +16,27 @@
 #include <QLabel>
 
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      canvas (new Canvas(this)) // Инициализируем графическую сцену
+      canvas(new Canvas(this)) // Инициализируем графическую сцену
 {
     // В некоторых средах значки меню по умолчанию не отображаются,
     // поэтому мы можем попробовать отключить атрибут Qt::AA_DontShowIconsInMenus
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
 
-
-
-
     /**************/
     QMenu *file;
     file = menuBar()->addMenu("&Файл");
     /**************/
-    QPixmap newpix("U:/ProjectQt/ZKL/Icons/icons8-file-64.png");
+    QPixmap newpix("Icons/icons8-file-64.png");
     QAction *newa = new QAction(newpix, "&Создать", this);
     newa->setShortcut(tr("Ctrl+N"));
     file->addAction(newa);
+    connect(newa, &QAction::triggered, newFile, &CreateFile::createFile);
 
-    QPixmap openpix("U:/ProjectQt/ZKL/Icons/icons8-document-64.png");
+    QPixmap openpix("Icons/icons8-document-64.png");
     QAction *open = new QAction(openpix, "&Открыть", this);
     open->setShortcut(tr("Ctrl+O"));
     file->addAction(open);
@@ -46,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     file->addAction(save);
     file->addSeparator();
 
-    QPixmap quitpix("U:/ProjectQt/ZKL/Icons/icons8-cancel-64.png");
+    QPixmap quitpix("Icons/icons8-cancel-64.png");
     QAction *quit = new QAction(quitpix, "&Выход", this);
     quit->setShortcut(tr("Ctrl+Q"));
     file->addAction(quit);
@@ -57,12 +58,12 @@ MainWindow::MainWindow(QWidget *parent)
     QMenu *mainb;
     mainb = menuBar()->addMenu("&Главная");
     /**************/
-    QPixmap histpix("U:/ProjectQt/ZKL/Icons/icons8-search-64.png");
+    QPixmap histpix("Icons/icons8-search-64.png");
     QAction *hist = new QAction(histpix, "&История", this);
     hist->setShortcut(tr("Ctrl+H"));
     mainb->addAction(hist);
 
-    QPixmap layerspix("U:/ProjectQt/ZKL/Icons/icons8-plus-+-64.png");
+    QPixmap layerspix("Icons/icons8-plus-+-64.png");
     QAction *layers = new QAction(layerspix, "&Слои", this);
     layers->setShortcut(tr("Ctrl+L"));
     mainb->addAction(layers);
@@ -72,14 +73,14 @@ MainWindow::MainWindow(QWidget *parent)
     sideb = menuBar()->addMenu("&Вид");
     /**************/
 
-    QPixmap rulerspix("U:/ProjectQt/ZKL/Icons/icons8-ruler-64.png");
+    QPixmap rulerspix("Icons/icons8-ruler-64.png");
     QAction *rulers = new QAction(rulerspix, "&Линейки", this);
     rulers->setShortcut(tr("Ctrl+L"));
     rulers->setCheckable(true);
     sideb->addAction(rulers);
     connect(rulers, &QAction::triggered, this, &MainWindow::toggleStatusbar);
 
-    QPixmap gridLinespix("U:/ProjectQt/ZKL/Icons/icons8-table-40.png");
+    QPixmap gridLinespix("Icons/icons8-table-40.png");
     QAction *gridLines = new QAction(gridLinespix, "&Линии сетки", this);
     gridLines->setShortcut(tr("Ctrl+G"));
     gridLines->setCheckable(true);
@@ -88,10 +89,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     /*************/
-    QToolBar *toolbar = addToolBar("Панель инструментов");
+    QToolBar *toolbar = addToolBar("&Панель инструментов");
 
-    QPixmap brushpix("U:/ProjectQt/ZKL/Icons/icons8-paint-64.png");
-    QAction *brush = toolbar->addAction(QIcon(brushpix), "Кисть");
+    QPixmap brushpix("Icons/icons8-paint-64.png");
+    QAction *brush = toolbar->addAction(QIcon(brushpix), "&Кисть");
+    brush->setShortcut(tr("Ctrl+B"));
+    brush->setCheckable(true);
+    connect(brush, &QAction::triggered, this, &MainWindow::brush);
+
     viewer = new QGraphicsView(this);
     canvas->setSceneRect(0,0, 500, 500);
     viewer->setFixedSize(600,600);
@@ -104,20 +109,29 @@ MainWindow::MainWindow(QWidget *parent)
             canvas, static_cast<void (Canvas::*)(int)>(&Canvas::setSize));
     toolbar->addSeparator();
 
-    connect(brush, &QAction::triggered, canvas, &Canvas::setSize);
 
 
     QPixmap fillpix("U:/ProjectQt/ZKL/Icons/icons8-fill-color-64.png");
-    toolbar->addAction(QIcon(fillpix), "Заливка");
+    toolbar->addAction(QIcon(fillpix), "&Заливка");
 
     QPixmap textpix("U:/ProjectQt/ZKL/Icons/icons8-text-box-64.png");
-    toolbar->addAction(QIcon(textpix), "Текст");
+    toolbar->addAction(QIcon(textpix), "&Текст");
 
     QPixmap eraserpix("U:/ProjectQt/ZKL/Icons/icons8-eraser-64.png");
-    toolbar->addAction(QIcon(eraserpix), "Ластик");
+    QAction *eraser = toolbar->addAction(QIcon(eraserpix), "&Ластик");
+    eraser->setShortcut(tr("Ctrl+E"));
+    eraser->setCheckable(true);
+    connect(eraser, &QAction::triggered, this, &MainWindow::eraser);
 
-    QPixmap palettepix("U:/ProjectQt/ZKL/Icons/icons8-paint-palette-64.png");
-    toolbar->addAction(QIcon(palettepix), "Палитра");
+
+
+    QPixmap palettepix("Icons/icons8-paint-palette-64.png");
+    QAction *palette = toolbar->addAction(QIcon(palettepix), "&Палитра");
+    palette->setShortcut(tr("Ctrl+P"));
+    palette->setCheckable(true);
+    connect(palette, &QAction::triggered, this, &MainWindow::setColor);
+
+
 
 
     /*************/
@@ -151,3 +165,28 @@ void MainWindow::toggleStatusbar()
 }
 
 
+void MainWindow::setColor()
+{
+    wasEraser = false;
+    QColor color = QColorDialog::getColor(Qt::white, this, "Палитра");
+    if(color.isValid())
+        canvas->pen->setColor(color);
+    else canvas->pen->setColor(canvas->previusColor);
+}
+
+void MainWindow::eraser()
+{
+    if(!wasEraser)
+    {
+        canvas->previusColor = canvas->pen->color();
+        QColor color = QColor(Qt::white);
+        canvas->pen->setColor(color);
+        wasEraser = true;
+    }
+}
+
+void MainWindow::brush()
+{
+    wasEraser = false;
+    canvas->pen->setColor(canvas->previusColor);
+}
