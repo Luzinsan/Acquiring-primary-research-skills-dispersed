@@ -12,6 +12,8 @@
 #include <QPicture>
 #include <QPainter>
 #include <QGraphicsPixmapItem>
+#include <QList>
+#include <QLine>
 
 class Canvas : public QGraphicsScene
 {
@@ -22,20 +24,23 @@ public:
     ~Canvas();
     QPen *pen = new QPen(Qt::black, 2, Qt::SolidLine);
     QColor previusColor = QColor(Qt::black);
-    void setChosenInstrument(int id);
+    QPolygon *pointsOfLine = new QPolygon; // вектор точек для линий (всех)
+    QList<QLine> *polyline = new QList<QLine>; // лист, состоящий из линий - образует кривую
+    QList<QList<QLine>> *figures = new QList<QList<QLine>>; // лист, содержащий все объекты на холсте
+
     void loadPicture(QString path);
 
     //void copySceneAsIMG();
 
 public slots:
     void setSize(int size);
-
+    void setToolLine();
 private:
     QPointF previousPoint;      // Координаты предыдущей точки
 
     QImage canvasCopy;
 
-    int chosenInstrument = 0;
+    int chosenInstrument = 0; // 1 - Прямая линия;
 
     int mouseOnPressXPosition = 0;
     int mouseOnPressYPosition = 0;
@@ -46,13 +51,13 @@ private:
     QRubberBand* rubberBand;
     QPointF origin;
 
-private:
+public:
 
     // Для рисования используем события мыши
     void mousePressEvent(QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void drawLine(int x, int y);
+    void drawLine(QPoint start_p, QPoint end_p);
 };
 
 #endif // CANVAS_H
