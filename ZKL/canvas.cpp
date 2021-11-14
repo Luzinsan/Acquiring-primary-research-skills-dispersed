@@ -1,13 +1,18 @@
 #include "canvas.h"
+#include "mainwindow.h"
 #include <QComboBox>
 #include <QStringList>
 #include <QColor>
+#include <QPoint>
+#include <QGraphicsItem>
+#include <QPolygonF>
+#include <QLine>
+#include <QVector>
 
 /* this->clearSelection();  //СОХРАНЕНИЕ КАРТИНКИ
     this->setSceneRect(this->itemsBoundingRect());
     QImage image(this->sceneRect().size().toSize(), QImage::Format_ARGB32);
     image.fill(Qt::transparent);
-
     QPainter _painter(&image);
     this->render(&_painter);
     image.save("C:\\Users\\Pavel\\Desktop\\ТУСУР\\2 Курс\\ППННИРР\\pract_proj\\file_name.png"); */
@@ -24,7 +29,7 @@ Canvas::Canvas(QObject *parent) : QGraphicsScene(parent)
 {
     //this->set
     //rubberBand = nullptr;
-    rubberBand = new QRubberBand(QRubberBand::Rectangle);
+    //rubberBand = new QRubberBand(QRubberBand::Rectangle);
     pen->setColor(Qt::black);
     pen->setStyle(Qt::SolidLine);
     pen->setCapStyle(Qt::RoundCap);
@@ -44,9 +49,14 @@ void Canvas::loadPicture(QString path)
     addItem(&item);
 }
 
-void Canvas::setChosenInstrument(int id)
+void Canvas::setToolLine()
 {
-    chosenInstrument = id;
+    chosenInstrument = 1;
+}
+
+void Canvas::setToolRays()
+{
+    chosenInstrument = 3;
 }
 
 /*void Canvas::copySceneAsIMG()
@@ -64,68 +74,59 @@ void Canvas::setSize(int size)
 }
 
 
-
-void Canvas::drawLine(int x, int y)
-{
-    // Отрисовываем линии с использованием предыдущей координаты
-    addLine(previousPoint.x(),
-            previousPoint.y(),
-            x,
-            y,
-            *pen);
-}
-
-void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    Q_UNUSED(event);
-    mouseOnStartMoveXPosition = -1;
-    mouseOnStartMoveYPosition = -1;
-    //rubberBand->hide();
-}
-
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    mouseOnPressXPosition = event->screenPos().x();
-    mouseOnPressYPosition = event->screenPos().y();
 
-    printf("x = %d, y = %d\n", mouseOnPressXPosition, mouseOnPressYPosition);
+    switch(chosenInstrument)
+    {
+    case 1: case 3: // кисть и лучи
+        //MainWindow::wasEraser = false;
+        //canvas->pen->setColor(canvas->previusColor);
+        //pen->brush();
+        pointsOfLine->append(event->scenePos().toPoint()); // Сохраняем координаты точки нажатия
+        addEllipse(event->scenePos().x(), event->scenePos().y(), 1, 1, QPen(pen->color()));
+        break;
+   /* case 2:
+        QGraphicsItem *item;
+        break;
+    case 3:
+        break;
+    default:
+        break;*/
+    }
 
 
-    addEllipse(event->scenePos().x(),
-               event->scenePos().y(),
-               pen->width(),
-               pen->width(),
-               *pen);
-    // Сохраняем координаты точки нажатия
-    previousPoint = event->scenePos(); Qt::GlobalColor n;
+   //rubberBand->setGeometry(1, 1, 10, 10);  //QRect(origin.toPoint(), QSize())
+   // rubberBand->show();
 
-   origin = event->pos();
-        //if (!rubberBand)
-        //    rubberBand = new QRubberBand(QRubberBand::Rectangle);
-        rubberBand->setGeometry(1, 1, 10, 10);  //QRect(origin.toPoint(), QSize())
-        rubberBand->show();
-   //copySceneAsIMG();
 }
+
+
 
 void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (mouseOnStartMoveXPosition == -1 && mouseOnStartMoveYPosition == -1) {
-        mouseOnStartMoveXPosition = event->screenPos().x();
-        mouseOnStartMoveYPosition = event->screenPos().y();
-    }
+
     switch (chosenInstrument)
     {
-        case 0: // Рисование
-            drawLine(event->scenePos().x(), event->scenePos().y());
+        case 1: // Рисование
+            current_line = new QLine(pointsOfLine->last(), event->scenePos().toPoint());
+            pointsOfLine->append(event->scenePos().toPoint());
+            polyline->append(*current_line);
+            addLine(*current_line, *pen);
             break;
-        case 1: // Ластик
+        //case 2: // Ластик
             break;
-        case 2: // Прямоугольное выделение объекта
-            rubberBand->setGeometry(mouseOnStartMoveXPosition, mouseOnStartMoveYPosition,
-                                    event->screenPos().x() - mouseOnStartMoveXPosition,
-                                    event->screenPos().y() - mouseOnStartMoveYPosition); //QRect(origin.toPoint(), event->scenePos().toPoint()).normalized()
+        //case 3: // Прямоугольное выделение объекта
+         //   rubberBand->setGeometry(mouseOnStartMoveXPosition, mouseOnStartMoveYPosition,
+         //                           event->screenPos().x() - mouseOnStartMoveXPosition,
+         //                           event->screenPos().y() - mouseOnStartMoveYPosition); //QRect(origin.toPoint(), event->scenePos().toPoint()).normalized()
             break;
-        default: // выбран какой-то другой инструмент
+       case 3: // лучи
+            current_line = new QLine(pointsOfLine->last(), event->scenePos().toPoint());
+            polyline->append(*current_line);
+            addLine(*current_line, *pen);
+            break;
+        //default: // выбран какой-то другой инструмент
             break;
     }
 
@@ -133,7 +134,6 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     this->setSceneRect(this->itemsBoundingRect());                          // Re-shrink the scene to it's bounding contents
     QImage image(this->sceneRect().size().toSize(), QImage::Format_ARGB32);  // Create the image with the exact size of the shrunk scene
     image.fill(Qt::transparent);                                              // Start all pixels transparent
-
     QPainter _painter(&image);
     this->render(&_painter);
     image.save("file_name.png"); */
@@ -141,7 +141,14 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     //copySceneAsIMG();//
    // canvasCopy.save("file_name.png");
 
+}
 
-    // Обновляем данные о предыдущей координате
-    previousPoint = event->scenePos();
+
+
+void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    Q_UNUSED(event);
+    figures->append(*polyline);
+    polyline->clear();
+    //rubberBand->hide();
 }

@@ -13,6 +13,7 @@ SOURCES += \
     canvas.cpp \
     createfile.cpp \
     feedback.cpp \
+    figure.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -20,6 +21,7 @@ HEADERS += \
     canvas.h \
     createfile.h \
     feedback.h \
+    figure.h \
     mainwindow.h
 
 FORMS += \

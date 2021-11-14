@@ -26,12 +26,10 @@ int main(int argc, char *argv[])
     window.setWindowTitle("MainWindow!!!");
     window.show();
 /*
-
     Feedback feedback;
     feedback.resize(800, 500);
     feedback.setWindowTitle("Feedback!!!");
     feedback.show();
-
     */
     return app.exec();
 

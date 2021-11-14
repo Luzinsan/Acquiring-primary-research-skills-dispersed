@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QApplication>
+#include <QGraphicsScene>
 #include <QComboBox>
 #include "canvas.h"
 #include "createfile.h"
