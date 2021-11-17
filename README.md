@@ -13,7 +13,6 @@
 - - Завзятов В.С.: изучение принципов проектирования  графического интерфейса пользователя и его программирование.
 
 #### Qt:
-https://doc.qt.io/qt-6/reference-overview.html
-Какая-то фигня на Qt: https://github.com/bmstu-ics7/computer-graphics/tree/master/lab_03
-Тут разные алгоритмы, в том числе и по работе с графикой:
-http://algolist.manual.ru/
+- https://doc.qt.io/qt-6/reference-overview.html
+- Какая-то фигня на Qt: https://github.com/bmstu-ics7/computer-graphics/tree/master/lab_03
+- Тут разные алгоритмы, в том числе и по работе с графикой: http://algolist.manual.ru/
