@@ -6,6 +6,8 @@ class Feedback: public QWidget
 {
 public:
     Feedback(QWidget *parent = 0);
+
+
 };
 
 #endif // FEEDBACK_H

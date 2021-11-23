@@ -1,6 +1,10 @@
 #include "mainwindow.h"
 #include "canvas.h"
+#include "figure.h"
 #include "createfile.h"
+
+#include <QFileDialog>
+
 #include <QColorDialog>
 
 #include <QGraphicsView>
@@ -14,6 +18,7 @@
 #include <QTextEdit>
 #include <QSpinBox>
 #include <QLabel>
+#include "figure.h"
 
 
 
@@ -40,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *open = new QAction(openpix, "&Открыть", this);
     open->setShortcut(tr("Ctrl+O"));
     file->addAction(open);
+    connect(open, &QAction::triggered, this, &MainWindow::openFile);
 
     QPixmap savepix("U:/ProjectQt/ZKL/Icons/icons8-folder-64.png");
     QAction *save = new QAction(savepix, "&Сохранить", this);
@@ -89,18 +95,22 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     /*************/
+    viewer = new QGraphicsView(this);
+    canvas->setSceneRect(0,0,1400,780);
+    viewer->setFixedSize(1410,790);
+    viewer->setScene(canvas);
+
+
     QToolBar *toolbar = addToolBar("&Панель инструментов");
+
 
     QPixmap brushpix("Icons/icons8-paint-64.png");
     QAction *brush = toolbar->addAction(QIcon(brushpix), "&Кисть");
     brush->setShortcut(tr("Ctrl+B"));
     brush->setCheckable(true);
-    connect(brush, &QAction::triggered, this, &MainWindow::brush);
+    connect(brush, &QAction::triggered, canvas, &Canvas::setToolLine);
 
-    viewer = new QGraphicsView(this);
-    canvas->setSceneRect(0,0, 500, 500);
-    viewer->setFixedSize(600,600);
-    viewer->setScene(canvas);
+
 
     QSpinBox *spinbox = new QSpinBox(this);
 
@@ -110,46 +120,109 @@ MainWindow::MainWindow(QWidget *parent)
     toolbar->addSeparator();
 
 
-
-    QPixmap fillpix("U:/ProjectQt/ZKL/Icons/icons8-fill-color-64.png");
-    toolbar->addAction(QIcon(fillpix), "&Заливка");
-
-    QPixmap textpix("U:/ProjectQt/ZKL/Icons/icons8-text-box-64.png");
-    toolbar->addAction(QIcon(textpix), "&Текст");
-
-    QPixmap eraserpix("U:/ProjectQt/ZKL/Icons/icons8-eraser-64.png");
-    QAction *eraser = toolbar->addAction(QIcon(eraserpix), "&Ластик");
-    eraser->setShortcut(tr("Ctrl+E"));
-    eraser->setCheckable(true);
-    connect(eraser, &QAction::triggered, this, &MainWindow::eraser);
-
-
-
     QPixmap palettepix("Icons/icons8-paint-palette-64.png");
     QAction *palette = toolbar->addAction(QIcon(palettepix), "&Палитра");
     palette->setShortcut(tr("Ctrl+P"));
     palette->setCheckable(true);
     connect(palette, &QAction::triggered, this, &MainWindow::setColor);
 
+    QAction *duplication = toolbar->addAction( "&Дублирование");
+    duplication->setShortcut(tr("Ctrl+D"));
+    duplication->setCheckable(true);
+    connect(duplication, &QAction::triggered, canvas, &Canvas::setToolDuplication);
 
+
+    QPixmap fillpix("Icons/icons8-fill-color-64.png");
+    toolbar->addAction(QIcon(fillpix), "&Заливка");
+
+    // Figure *figure = new Figure(canvas);
+
+    QAction *line = toolbar->addAction( "&Прямая");
+    line->setShortcut(tr("Ctrl+L"));
+    line->setCheckable(true);
+    //connect(line, &QAction::triggered, canvas, &Canvas::setToolLine);
+
+
+    QPixmap rectpix("Icons/icons8-rectangle-64.png");
+    QAction *rect = toolbar->addAction(QIcon(rectpix), "&Квадрат");
+    rect->setShortcut(tr("Ctrl+R"));
+    rect->setCheckable(true);
+    connect(rect, &QAction::triggered, this, &MainWindow::setFigureRectangle);
+
+    QPixmap circlefillpix("Icons/icons8-filled-circle-64.png");
+    QAction *circlefill = toolbar->addAction( QIcon(circlefillpix), "&Круг");
+    circlefill->setShortcut(tr("Ctrl+C"));
+    circlefill->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    connect(circlefill, &QAction::triggered, this, &MainWindow::setFigureCircle);
+
+    //QPixmap circlepix("U:/ProjectQt/ZKL/Icons/icons8-circle-64.png");
+    //QAction *circle = toolbar->addAction(QIcon(circlepix), "&Окружность");
+    //circle->setShortcut(tr("Ctrl+Shift+C"));
+    //circle->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    //connect(circle, &QAction::triggered, figure,  &Figure::setFigureCircle);
+
+    QPixmap trianglepix("Icons/icons8-triangle-64.png"); //  треугольник
+    QAction *triangle = toolbar->addAction( QIcon(trianglepix),"&Треугольник");
+    triangle->setShortcut(tr("Ctrl+T"));
+    triangle->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    connect(triangle, &QAction::triggered, this, &MainWindow::setFigureTriangle);
+
+    QPixmap trianglerectpix("Icons/icons8-triangle-64.png"); // пока что равносторонний треугольник
+    QAction *trianglerect = toolbar->addAction( QIcon(trianglerectpix),"&Прямоугольный треугольник");
+    trianglerect->setShortcut(tr("Ctrl+T+R"));
+    trianglerect->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    connect(trianglerect, &QAction::triggered, this, &MainWindow::setFigureTriangleRectangular);
+
+    QPixmap rhombpix("Icons/icons8-rhomboid-shape-64.png");
+    QAction *rhomb = toolbar->addAction(QIcon(rhombpix), "&Ромб");
+    rhomb->setShortcut(tr("Ctrl+Shift+R"));
+    rhomb->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    connect(rhomb, &QAction::triggered, this, &MainWindow::setFigureRhomb);
+
+    QPixmap trapezoidpix("Icons/icons8-rhomboid-shape-64.png"); // Тоже найти иконку
+    QAction *trapezoid = toolbar->addAction(QIcon(trapezoidpix),  "&Трапеция");
+    trapezoid->setShortcut(tr("Ctrl+Shift+T"));
+    trapezoid->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    connect(trapezoid, &QAction::triggered, this, &MainWindow::setFigureTrapezoid);
+
+    QPixmap pentagonpix("Icons/icons8-rhomboid-shape-64.png"); // Тоже найти иконку
+    QAction *pentagon = toolbar->addAction(QIcon(pentagonpix),  "&Пятиугольник");
+    pentagon->setShortcut(tr("Ctrl+Shift+T"));
+    pentagon->setCheckable(true);
+    //Figure *figure = new Figure(canvas);
+    connect(pentagon, &QAction::triggered, this, &MainWindow::setFigurePentagon);
+
+
+    QPixmap textpix("Icons/icons8-text-box-64.png");
+    toolbar->addAction(QIcon(textpix), "&Текст");
+
+    QPixmap eraserpix("Icons/icons8-eraser-64.png");
+    QAction *eraser = toolbar->addAction(QIcon(eraserpix), "&Ластик");
+    eraser->setShortcut(tr("Ctrl+E"));
+    eraser->setCheckable(true);
+    connect(eraser, &QAction::triggered, canvas, &Canvas::setToolEraser);
 
 
     /*************/
     QToolBar *explorer = addToolBar("Проводник");
 
-    QPixmap projectspix("U:/ProjectQt/ZKL/Icons/icons8-picture-64.png");
+    QPixmap projectspix("Icons/icons8-picture-64.png");
     explorer->addAction(QIcon(projectspix), "Проекты");
     explorer->addSeparator();
 
-    QPixmap propertiespix("U:/ProjectQt/ZKL/Icons/icons8-settings-64.png");
+    QPixmap propertiespix("Icons/icons8-settings-64.png");
     explorer->addAction(QIcon(propertiespix), "Свойства");
 
-    QPixmap resourcespix("U:/ProjectQt/ZKL/Icons/icons8-categorize-64.png");
+    QPixmap resourcespix("Icons/icons8-categorize-64.png");
     explorer->addAction(QIcon(resourcespix), "Ресурсы");
 
     /*************/
-
-
 
     setCentralWidget(viewer);
     statusBar()->showMessage("Готово");
@@ -167,26 +240,55 @@ void MainWindow::toggleStatusbar()
 
 void MainWindow::setColor()
 {
-    wasEraser = false;
-    QColor color = QColorDialog::getColor(Qt::white, this, "Палитра");
-    if(color.isValid())
-        canvas->pen->setColor(color);
-    else canvas->pen->setColor(canvas->previusColor);
-}
-
-void MainWindow::eraser()
-{
-    if(!wasEraser)
+    QColor color = QColorDialog::getColor(Qt::black, this, "Палитра");
+    if(color.isValid())   
     {
-        canvas->previusColor = canvas->pen->color();
-        QColor color = QColor(Qt::white);
-        canvas->pen->setColor(color);
-        wasEraser = true;
+        canvas->pen.setBrush(color);
+        canvas->currentColor = color;
     }
+    else canvas->pen.setBrush(canvas->currentColor);
 }
 
-void MainWindow::brush()
+void MainWindow::setFigureRectangle()
 {
-    wasEraser = false;
-    canvas->pen->setColor(canvas->previusColor);
+    canvas->setToolFigure();
+    canvas->setRectangle();
+}
+void MainWindow::setFigureCircle()
+{
+    canvas->setToolFigure();
+    canvas->setCircle();
+}
+void MainWindow::setFigureTriangle()
+{
+    canvas->setToolFigure();
+    canvas->setTriangle();
+}
+void MainWindow::setFigureTriangleRectangular()
+{
+    canvas->setToolFigure();
+    canvas->setTriangleRectangular();
+}
+void MainWindow::setFigureRhomb()
+{
+    canvas->setToolFigure();
+    canvas->setRhomb();
+}
+void MainWindow::setFigureTrapezoid()
+{
+    canvas->setToolFigure();
+    canvas->setTrapezoid();
+}
+void MainWindow::setFigurePentagon()
+{
+    canvas->setToolFigure();
+    canvas->setPentagon();
+}
+void MainWindow::openFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Открыть файл"),
+                                                    "C://",
+                                                    "Images (*.png, *.jpg)");
+    canvas->loadPicture(fileName);
 }
