@@ -22,20 +22,14 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
     MainWindow window;
     window.setPalette(QPalette(QColor(90,90,140,250)));
-    window.setWindowIcon(QIcon("Icons/icons8-categorize-64.png"));
+    window.setWindowIcon(QIcon("Icons/icons8-impossible-shapes-64.png"));
     window.resize(1420, 800);
     window.setFixedSize(1415, 790);
     window.setWindowTitle("XPainter");
     window.show();
-/*
-    Feedback feedback;
-    feedback.resize(800, 500);
-    feedback.setWindowTitle("Feedback!!!");
-    feedback.show();
-    */
+
     return app.exec();
-
-
 }

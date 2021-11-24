@@ -26,8 +26,7 @@ public slots:
     void toggleStatusbar();
     void setColor();
 
-
-
+    void setFigureLine();
     void setFigureRectangle();
     void setFigureCircle();
     void setFigureTriangleRectangular();
@@ -40,7 +39,5 @@ public slots:
 
 private:
     QAction *viewst;
-
-
 };
 #endif // MAINWINDOW_H

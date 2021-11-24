@@ -29,7 +29,6 @@ public:
     QLine *current_line = new QLine;
     QList<QLine> *polyline = new QList<QLine>; // лист, состоящий из линий - образует кривую
     QList<QList<QLine>> *polylines = new QList<QList<QLine>>; // лист, содержащий все объекты на холсте
-   // Figure *f = new Figure();
     QList<Figure*> figures;
     Figure *figure = nullptr;
     bool wasEraser = false;
@@ -39,19 +38,30 @@ public:
     //void copySceneAsIMG();
 
 public slots:
+    void setSolidLine();
+    void setDashLine();
+    void setDotLine();
+    void setDashDotLine();
+    void setDashDotDotLine();
+    void setCustomLine();
+
+    void deleteAll();
+
     void setSize(int size);
     void setToolLine();
     void setToolDuplication();
     void setToolFigure();
     void setToolEraser();
+    void setToolText();
 
-    void setRectangle();//1
-    void setCircle();//2
-    void setTriangle();//3
-    void setTriangleRectangular();//4
-    void setRhomb();//5
-    void setTrapezoid();//6
-    void setPentagon();//7
+    void setLine();//1
+    void setRectangle();//2
+    void setCircle();//3
+    void setTriangle();//4
+    void setTriangleRectangular();//5
+    void setRhomb();//6
+    void setTrapezoid();//7
+    void setPentagon();//8
 
 private:
 
@@ -70,7 +80,7 @@ private:
 
     QImage canvasCopy;
 
-    int chosenInstrument = 0; // 1 - Прямая линия;
+    int chosenInstrument = 0;
     int chosenFigure = 0;
 
     QRubberBand* rubberBand;
@@ -78,11 +88,9 @@ private:
 
 public:
 
-    // Для рисования используем события мыши
     void mousePressEvent(QGraphicsSceneMouseEvent * event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
 };
 
 #endif // CANVAS_H

@@ -3,13 +3,15 @@
 #include <QComboBox>
 #include <QStringList>
 #include <QColor>
+#include <QPen>
 #include <QPoint>
 #include <QGraphicsItem>
 #include <QPolygonF>
 #include <QLine>
 #include <QVector>
 #include <QTransform>
-#include <iostream>
+#include <QInputDialog>
+
 
 /* this->clearSelection();  //СОХРАНЕНИЕ КАРТИНКИ
     this->setSceneRect(this->itemsBoundingRect());
@@ -47,6 +49,38 @@ void Canvas::loadPicture(QString path)
             image->setPos(0, 0);
         this->addItem(image);
 }
+
+void Canvas::setSolidLine()
+{
+    pen.setStyle(Qt::SolidLine);
+}
+void Canvas::setDashLine()
+{
+    pen.setStyle(Qt::DashLine);
+}
+void Canvas::setDotLine()
+{
+    pen.setStyle(Qt::DotLine);
+}
+void Canvas::setDashDotLine()
+{
+    pen.setStyle(Qt::DashDotLine);
+}
+void Canvas::setDashDotDotLine()
+{
+    pen.setStyle(Qt::DashDotDotLine);
+}
+void Canvas::setCustomLine()
+{
+    QVector<qreal> dashes;
+    qreal space = 10*pen.width();
+    dashes << 1 << space;
+    pen.setCosmetic(true);
+    pen.setMiterLimit(5);
+    pen.setDashPattern(dashes);
+}
+
+
 void Canvas::setToolLine()
 {
     chosenInstrument = 1;
@@ -57,41 +91,48 @@ void Canvas::setToolFigure()
 }
 void Canvas::setToolDuplication()
 {
-    if(duplication) duplication = false;
-    else duplication = true;
+    duplication = !duplication;
+}
+void Canvas::setToolText()
+{
+   chosenInstrument = 4;
 }
 void Canvas::setToolEraser()
 {
    chosenInstrument = 3;
 }
 
-void Canvas::setRectangle()
+void Canvas::setLine()
 {
     chosenFigure = 1;
 }
-void Canvas::setCircle()
+void Canvas::setRectangle()
 {
     chosenFigure = 2;
 }
-void Canvas::setTriangle()
+void Canvas::setCircle()
 {
-   chosenFigure = 3;
+    chosenFigure = 3;
 }
-void Canvas::setTriangleRectangular()
+void Canvas::setTriangle()
 {
     chosenFigure = 4;
 }
-void Canvas::setRhomb()
+void Canvas::setTriangleRectangular()
 {
     chosenFigure = 5;
 }
-void Canvas::setTrapezoid()
+void Canvas::setRhomb()
 {
     chosenFigure = 6;
 }
-void Canvas::setPentagon()
+void Canvas::setTrapezoid()
 {
     chosenFigure = 7;
+}
+void Canvas::setPentagon()
+{
+    chosenFigure = 8;
 }
 /*void Canvas::copySceneAsIMG()
 {
@@ -105,6 +146,12 @@ void Canvas::setPentagon()
 void Canvas::setSize(int size)
 {
     pen.setWidth(size);
+}
+
+
+void Canvas::deleteAll()
+{
+    clear();
 }
 
 void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -144,19 +191,35 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
                                      pen);
             } else
             {
-                x2 = event->screenPos().x();
-                y2 = event->screenPos().y();
+                x2 = event->scenePos().x();
+                y2 = event->scenePos().y();
 
                 mouseOnEndPressXPosition = -2;
                 mouseOnEndPressYPosition = -2;
             }
         break;
 
+    case 4:
+    {
+        //if(!this->itemAt(event->scenePos().toPoint(),QTransform()))
+        //{
+            x1=event->scenePos().x();
+            y1=event->scenePos().y();
+            bool ok=true;
+            QString text = QInputDialog::getMultiLineText(event->widget(),
+                                                          tr("Введите текст"),
+                                                          tr("Текст: "),
+                                                          "Приятного времени суток\nВводите здесь свой текст ;)",
+                                                          &ok);
+            this->addSimpleText(text)->moveBy(event->scenePos().x(),event->scenePos().y());
+        //}
+
+
+        break;
+    }
     default:
         break;
     }
-
-
 }
 
 void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -166,6 +229,7 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         case 1: // Рисование
             if(duplication)// лучи
             {
+
                 current_line = new QLine(pointsOfLine->last(), event->scenePos().toPoint());
                 polyline->append(*current_line);
                 addLine(*current_line, pen);
@@ -188,7 +252,9 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                                  pen);
             addItem(figure);
             break;
+        //case 4:
 
+            //this->itemAt(QPoint(x1,y1),QTransform())->setPos(event->scenePos().toPoint());
 
         default: // выбран какой-то другой инструмент
             break;
