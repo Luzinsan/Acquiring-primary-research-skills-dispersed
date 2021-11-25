@@ -16,6 +16,7 @@
 #include <QTextEdit>
 #include <QSpinBox>
 #include <QLabel>
+#include <QLayout>
 
 
 
@@ -55,8 +56,8 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *save = new QAction(savepix, "&Сохранить", this);
     save->setShortcut(tr("Ctrl+S"));
     file->addAction(save);
-    file->addSeparator();
     connect(save, &QAction::triggered, this, &MainWindow::saveFile);
+    file->addSeparator();
 
     /***********************************************************ВЫХОД***/
 
@@ -98,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent)
     rulers->setShortcut(tr("Ctrl+L"));
     rulers->setCheckable(true);
     sideb->addAction(rulers);
-    connect(rulers, &QAction::triggered, this, &MainWindow::toggleStatusbar);
+    //connect(rulers, &QAction::triggered, this, &MainWindow::toggleStatusbar);
 
     /*******************ЛИНИИ СЕТКИ********************************************/
 
@@ -107,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent)
     gridLines->setShortcut(tr("Ctrl+G"));
     gridLines->setCheckable(true);
     sideb->addAction(gridLines);
-    connect(gridLines, &QAction::triggered, this, &MainWindow::toggleStatusbar);
+    connect(gridLines, &QAction::triggered, canvas, &Canvas::drowGridLines);
 
 
     /********************************************ГРАФИЧЕСКАЯ СЦЕНА************************************************/
@@ -115,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent)
     viewer = new QGraphicsView(this);
     canvas->setSceneRect(0,0,1400,780);
     viewer->setFixedSize(1410,790);
+
     viewer->setScene(canvas);
 
     /***********************ПАНЕЛЬ ИНСТРУМЕНТОВ -> СТИЛЬ ШТРИХА**********************************************/
@@ -398,6 +400,7 @@ void MainWindow::openFile()
                                                     "Images (*.png, *.jpg)");
     canvas->loadPicture(fileName);
 }
+
 
 void MainWindow::saveFile()
 {

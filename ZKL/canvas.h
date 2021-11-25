@@ -14,6 +14,7 @@
 #include <QGraphicsPixmapItem>
 #include <QList>
 #include <QLine>
+#include <QLayout>
 #include "figure.h"
 
 class Canvas : public QGraphicsScene
@@ -48,6 +49,7 @@ public slots:
 
     void deleteAll();
 
+    void drowGridLines();
     void setSize(int size);
     void setToolLine();
     void setToolDuplication();
@@ -74,7 +76,10 @@ private:
     void drawTrapezoid();
     void drawPentagon();
 
+
     qreal x1, y1, x2, y2;
+    QLayout *layout;
+    qreal widthGrid = 1;
 
     int mouseOnEndPressXPosition = -2,
     mouseOnEndPressYPosition = -2;

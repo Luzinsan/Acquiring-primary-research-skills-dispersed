@@ -12,6 +12,13 @@
 Figure::Figure(int _x1, int _y1, int _x2, int _y2, int _chosenFigure, QPen _pen) :
     QGraphicsItem(), chosenFigure{_chosenFigure}, x1{_x1}, y1{_y1}, x2{_x2}, y2{_y2}, pen{_pen}
 {
+    //setFlag(ItemIsMovable);
+    //setFlag(ItemIsSelectable);
+   // setFlag(ItemIsPanel);
+    //setFlag(ItemIsFocusScope);
+
+    //setFlag(ItemIsFocusable);
+
 }
 Figure::~Figure()
 {
@@ -41,16 +48,18 @@ void Figure::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->setPen(pen);
+    QRectF rect = boundingRect();
     switch(chosenFigure)
     {
        case 1://void Canvas::drawLine()
             painter->drawLine(x1, y1, x2, y2);
             break;
        case 2: //void Canvas::drawRectangle()
-            painter->drawRect(x1, y1, x2-x1, y2-y1);
+            painter->drawRect(rect);
+            //painter->fillRect(rect, pen.color());
             break;
        case 3: //void Canvas::drawCircle()
-            painter->drawEllipse(x1, y1, x2-x1, y2-y1);
+            painter->drawEllipse(rect);
             break;
        case 4://void Canvas::drawTriangle()
             painter->drawLine(x1, y2, (x1 + x2) / 2, y1);
@@ -113,15 +122,17 @@ void Figure::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
             painter->drawLine(cW, y1, x1, y1 + uShift);
             painter->drawLine(x1, y1 + uShift, x1 + shift, y2);
         }
-        }
+    }
 }
 
 
 
 void Figure::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    Q_UNUSED(event);
+    wasPressed = true;
+    update();
     this->setCursor(QCursor(Qt::ClosedHandCursor));
+    QGraphicsItem::mousePressEvent(event);
 }
 
 void Figure::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -131,8 +142,10 @@ void Figure::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void Figure::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    wasPressed = false;
+    update();
     this->setCursor(QCursor(Qt::ArrowCursor));
-    Q_UNUSED(event);
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 

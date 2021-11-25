@@ -21,7 +21,6 @@ public:
     QComboBox *combo;
     CreateFile* newFile = new CreateFile();
 
-
 public slots:
     void toggleStatusbar();
     void setColor();

@@ -12,6 +12,9 @@
 #include <QTransform>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QFont>
+#include <QGraphicsSimpleTextItem>
+
 
 
 /* this->clearSelection();  //СОХРАНЕНИЕ КАРТИНКИ
@@ -161,6 +164,18 @@ void Canvas::setPentagon()
 {
     chosenFigure = 8;
 }
+void Canvas::drowGridLines()
+{
+    clear();
+    QPen dash = pen;
+    widthGrid = pen.width();
+    pen.setWidth(1);
+    //pen.setCosmetic(true);
+    for(int i = 0; i < this->height(); i += widthGrid)
+        this->addLine(0, i, width(), i, pen);
+    pen = dash;
+
+}
 /*void Canvas::copySceneAsIMG()
 {
     this->clearSelection();                                                  // Selections would also render to the file
@@ -212,10 +227,13 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 mouseOnEndPressYPosition = -1;
                 x1 = event->scenePos().x();
                 y1 = event->scenePos().y();
+
                 figure =  new Figure(x1, y1,
                                      x1+1, y1+1,
                                      0,
                                      pen);
+                //figure->setCursor(Qt::IBeamCursor);
+
             } else
             {
                 x2 = event->scenePos().x();
@@ -224,6 +242,8 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 mouseOnEndPressXPosition = -2;
                 mouseOnEndPressYPosition = -2;
             }
+        //if(this->itemAt(event->scenePos(), QTransform()))
+
         break;
 
     case 4:
@@ -238,7 +258,12 @@ void Canvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
                                                           tr("Текст: "),
                                                           "Приятного времени суток\nВводите здесь свой текст ;)",
                                                           &ok);
-            this->addSimpleText(text)->moveBy(event->scenePos().x(),event->scenePos().y());
+            QFont font;
+            font.setPixelSize(widthGrid-5);
+            font.setStyleHint(QFont::SansSerif);
+            QGraphicsSimpleTextItem *textItem = this->addSimpleText(text, font);
+            textItem->setBrush(pen.brush());
+            textItem->moveBy(event->scenePos().x(),event->scenePos().y());
         //}
 
 
@@ -273,29 +298,37 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 figure->~Figure();
             x2 = event->scenePos().x();
             y2 = event->scenePos().y();
+            figure =  new Figure(x1, y1,
+                                 x2, y2,
+                                 chosenFigure,
+                                 pen);
+
+            /*
             if (x2 < x1 && y2 < y1)
                 figure =  new Figure(x2, y2,
                                      x1, y1,
                                      chosenFigure,
                                      pen);
-            else
-                if (x2 < x1)
-                    figure =  new Figure(x2, y1,
-                                         x1, y2,
-                                         chosenFigure,
-                                         pen);
-            else
-                if (y2 < y1)
-                    figure =  new Figure(x1, y2,
-                                         x2, y1,
-                                         chosenFigure,
-                                         pen);
+            else if (x2 < x1)
+                figure =  new Figure(x2, y1,
+                                     x1, y2,
+                                     chosenFigure,
+                                     pen);
+            else if (y2 < y1)
+                figure =  new Figure(x1, y2,
+                                     x2, y1,
+                                     chosenFigure,
+                                     pen);
             else
                 figure =  new Figure(x1, y1,
                                      x2, y2,
                                      chosenFigure,
                                      pen);
+            */
+
             addItem(figure);
+            //figure->update();
+
             break;
         //case 4:
 
@@ -329,6 +362,8 @@ void Canvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         case 2: // фигура
             mouseOnEndPressXPosition = -2;
             figures.append(figure);
+
+            //figure->unsetCursor();
             figure = nullptr;
             break;
        case 3:
