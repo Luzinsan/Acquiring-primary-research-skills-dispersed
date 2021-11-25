@@ -68,8 +68,8 @@ void Canvas::savePicture(QString path)
         image.fill(Qt::transparent);
         QPainter _painter(&image);
         this->render(&_painter);
-        background->~Figure();
-        background = nullptr;
+        //background->~Figure();
+        //background = nullptr;
         image.save(file);
 
 
@@ -113,7 +113,6 @@ void Canvas::setCustomLine()
     pen.setMiterLimit(5);
     pen.setDashPattern(dashes);
 }
-
 
 void Canvas::setToolLine()
 {
@@ -170,21 +169,20 @@ void Canvas::setPentagon()
 }
 void Canvas::setBackground()
 {
-    //if(background) delete background;
     clear();
     chosenFigure = 9;
+
     background =  new Figure(0, 0,
-                             width(), height(),
-                             chosenFigure,
-                             pen);
+                         width()-1, height()-1,
+                         chosenFigure,
+                         pen);
+
     addItem(background);
+    background = nullptr;
 }
 
-void Canvas::drowGridLines()
+void Canvas::drawGridLines()
 {
-    //if(background) background->setEnabled(false);
-   //clear();
-   // background->setEnabled(true);
     QPen background_pen = pen;
     widthGrid = pen.width()+1;
     pen.setWidth(1);

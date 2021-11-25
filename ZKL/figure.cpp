@@ -126,14 +126,14 @@ void Figure::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         }
         case 9:
             QRadialGradient radialGrad(QPointF(x2/2, y2/2),
-                                               (pen.width()+2)*10);
+                                               y2+30);
             radialGrad.setColorAt(0, QColor("#00ffff"));
-            radialGrad.setColorAt(0.5, QColor("#0000ff"));
-            radialGrad.setColorAt(1, QColor("#008080"));
+            radialGrad.setColorAt(0.5, QColor("#22aaff"));
+            radialGrad.setColorAt(1, QColor("#107090"));
             radialGrad.setSpread(QGradient::ReflectSpread);
             radialGrad.setFocalPoint(x1,y1);
 
-            painter->fillRect(x1,y1, widget->width(), widget->height(), radialGrad);
+            painter->fillRect(x1,y1, x2, y2, radialGrad);
             break;
     }
 }

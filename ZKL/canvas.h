@@ -50,7 +50,7 @@ public slots:
 
     void deleteAll();
 
-    void drowGridLines();
+    void drawGridLines();
     void setSize(int size);
     void setToolLine();
     void setToolDuplication();

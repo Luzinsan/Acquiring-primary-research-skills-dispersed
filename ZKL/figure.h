@@ -27,7 +27,7 @@ public:
 signals:
 
 private:
-    int chosenFigure = 0; // 1 - Квадрат; 2 - Круг; 3 - Прямоугольный треугольник; 4 - Ромб; 5 - Трапеция
+    int chosenFigure = 0;
     int x1=0,x2=1,y1=0,y2=1;
 
     QPen pen;

@@ -67,26 +67,6 @@ MainWindow::MainWindow(QWidget *parent)
     file->addAction(quit);
     connect(quit, &QAction::triggered, this, &QApplication::quit);
 
-
-    /*********************МЕНЮ -> ГЛАВНАЯ*******************/
-
-    QMenu *mainb;
-    mainb = menuBar()->addMenu("&Главная");
-
-    /****ИСТОРИЯ********************************************/
-
-    QPixmap histpix("Icons/icons8-time-machine-64.png");
-    QAction *hist = new QAction(histpix, "&История", this);
-    hist->setShortcut(tr("Ctrl+H"));
-    mainb->addAction(hist);
-
-    /*****************СЛОИ**********************************/
-
-    QPixmap layerspix("Icons/icons8-layers-64.png");
-    QAction *layers = new QAction(layerspix, "&Слои", this);
-    //layers->setShortcut(tr("Ctrl+L"));
-    mainb->addAction(layers);
-
     /**********************************МЕНЮ -> ВИД*****************************/
 
     QMenu *sideb;
@@ -108,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
     gridLines->setShortcut(tr("Ctrl+G"));
     gridLines->setCheckable(true);
     sideb->addAction(gridLines);
-    connect(gridLines, &QAction::triggered, canvas, &Canvas::drowGridLines);
+    connect(gridLines, &QAction::triggered, canvas, &Canvas::drawGridLines);
 
 
     /********************************************ГРАФИЧЕСКАЯ СЦЕНА************************************************/
