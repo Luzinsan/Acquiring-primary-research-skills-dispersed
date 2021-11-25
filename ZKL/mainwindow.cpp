@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     save->setShortcut(tr("Ctrl+S"));
     file->addAction(save);
     file->addSeparator();
+    connect(save, &QAction::triggered, this, &MainWindow::saveFile);
 
     /***********************************************************ВЫХОД***/
 
@@ -396,4 +397,14 @@ void MainWindow::openFile()
                                                     "C://",
                                                     "Images (*.png, *.jpg)");
     canvas->loadPicture(fileName);
+}
+
+void MainWindow::saveFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("Save file"),
+                                                    QDir::homePath(),
+                                                    "Images (*.png, *.jpg)");
+
+    canvas->savePicture(fileName);
 }

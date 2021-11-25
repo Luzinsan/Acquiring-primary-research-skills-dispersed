@@ -11,6 +11,7 @@
 #include <QVector>
 #include <QTransform>
 #include <QInputDialog>
+#include <QFileDialog>
 
 
 /* this->clearSelection();  //СОХРАНЕНИЕ КАРТИНКИ
@@ -48,6 +49,32 @@ void Canvas::loadPicture(QString path)
             image->setOffset(- imageWidth / 2, -imageHeight / 2);
             image->setPos(0, 0);
         this->addItem(image);
+}
+
+void Canvas::savePicture(QString path)
+{
+    QString file = path;
+
+
+    //this->clearSelection();  //СОХРАНЕНИЕ КАРТИНКИ
+        //this->setSceneRect(this->itemsBoundingRect());
+    const qreal width = this->width();
+    const qreal height = this->height();
+        QImage image(width, height, QImage::Format_ARGB32);
+        image.fill(Qt::transparent);
+        QPainter _painter(&image);
+        this->render(&_painter);
+        image.save(file);
+
+   /* if (!file.isEmpty()) {
+        //const QGraphicsScene *cur = scene();
+        const qreal width = this->width();
+        const qreal height = this->height();
+        QImage image(width, height, QImage::Format_RGB888);
+        QPainter painter(&image);
+        painter.setRenderHint(QPainter::Antialiasing);
+        this->render(&painter, QRectF(0, 0, width, height), QRect(0, 0, width, height));
+        image.save(file); */
 }
 
 void Canvas::setSolidLine()
@@ -246,10 +273,28 @@ void Canvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 figure->~Figure();
             x2 = event->scenePos().x();
             y2 = event->scenePos().y();
-            figure =  new Figure(x1, y1,
-                                 x2, y2,
-                                 chosenFigure,
-                                 pen);
+            if (x2 < x1 && y2 < y1)
+                figure =  new Figure(x2, y2,
+                                     x1, y1,
+                                     chosenFigure,
+                                     pen);
+            else
+                if (x2 < x1)
+                    figure =  new Figure(x2, y1,
+                                         x1, y2,
+                                         chosenFigure,
+                                         pen);
+            else
+                if (y2 < y1)
+                    figure =  new Figure(x1, y2,
+                                         x2, y1,
+                                         chosenFigure,
+                                         pen);
+            else
+                figure =  new Figure(x1, y1,
+                                     x2, y2,
+                                     chosenFigure,
+                                     pen);
             addItem(figure);
             break;
         //case 4:

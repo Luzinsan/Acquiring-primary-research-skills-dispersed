@@ -36,6 +36,7 @@ public slots:
     void setFigurePentagon();
 
     void openFile();
+    void saveFile();
 
 private:
     QAction *viewst;

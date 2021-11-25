@@ -34,6 +34,7 @@ public:
     bool wasEraser = false;
     bool duplication = false;
     void loadPicture(QString path);
+    void savePicture(QString path);
 
     //void copySceneAsIMG();
 
