@@ -7,6 +7,7 @@
 #include <QPainterPath>
 #include <QTextOption>
 #include <QInputDialog>
+#include <QRadialGradient>
 
 
 Figure::Figure(int _x1, int _y1, int _x2, int _y2, int _chosenFigure, QPen _pen) :
@@ -121,7 +122,19 @@ void Figure::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
             painter->drawLine(x2, y1 + uShift, cW, y1);
             painter->drawLine(cW, y1, x1, y1 + uShift);
             painter->drawLine(x1, y1 + uShift, x1 + shift, y2);
+            break;
         }
+        case 9:
+            QRadialGradient radialGrad(QPointF(x2/2, y2/2),
+                                               (pen.width()+2)*10);
+            radialGrad.setColorAt(0, QColor("#00ffff"));
+            radialGrad.setColorAt(0.5, QColor("#0000ff"));
+            radialGrad.setColorAt(1, QColor("#008080"));
+            radialGrad.setSpread(QGradient::ReflectSpread);
+            radialGrad.setFocalPoint(x1,y1);
+
+            painter->fillRect(x1,y1, widget->width(), widget->height(), radialGrad);
+            break;
     }
 }
 

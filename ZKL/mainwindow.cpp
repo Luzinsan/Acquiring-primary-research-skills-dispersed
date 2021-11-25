@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QPixmap layerspix("Icons/icons8-layers-64.png");
     QAction *layers = new QAction(layerspix, "&Слои", this);
-    layers->setShortcut(tr("Ctrl+L"));
+    //layers->setShortcut(tr("Ctrl+L"));
     mainb->addAction(layers);
 
     /**********************************МЕНЮ -> ВИД*****************************/
@@ -94,17 +94,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     /****ЛИНЕЙКИ***************************************************************/
 
-    QPixmap rulerspix("Icons/icons8-ruler-64.png");
-    QAction *rulers = new QAction(rulerspix, "&Линейки", this);
-    rulers->setShortcut(tr("Ctrl+L"));
-    rulers->setCheckable(true);
-    sideb->addAction(rulers);
-    //connect(rulers, &QAction::triggered, this, &MainWindow::toggleStatusbar);
+    QPixmap backgroundpix("Icons/icons8-paint-roller-64.png");
+    QAction *background = new QAction(backgroundpix, "&Задний фон", this);
+    background->setShortcut(tr("Ctrl+B"));
+    background->setCheckable(true);
+    sideb->addAction(background);
+    connect(background, &QAction::triggered, canvas, &Canvas::setBackground);
 
     /*******************ЛИНИИ СЕТКИ********************************************/
 
-    QPixmap gridLinespix("Icons/icons8-prison-64.png");
-    QAction *gridLines = new QAction(gridLinespix, "&Линии сетки", this);
+    QPixmap gridLinespix("Icons/icons8-line-width-64.png");
+    QAction *gridLines = new QAction(gridLinespix, "&Разлиновка", this);
     gridLines->setShortcut(tr("Ctrl+G"));
     gridLines->setCheckable(true);
     sideb->addAction(gridLines);
@@ -116,7 +116,6 @@ MainWindow::MainWindow(QWidget *parent)
     viewer = new QGraphicsView(this);
     canvas->setSceneRect(0,0,1400,780);
     viewer->setFixedSize(1410,790);
-
     viewer->setScene(canvas);
 
     /***********************ПАНЕЛЬ ИНСТРУМЕНТОВ -> СТИЛЬ ШТРИХА**********************************************/
@@ -174,7 +173,7 @@ MainWindow::MainWindow(QWidget *parent)
     /*КИСТЬ************************************************************************/
     QPixmap brushpix("Icons/icons8-paint-64.png");
     QAction *brush = toolbar->addAction(QIcon(brushpix), "&Кисть");
-    brush->setShortcut(tr("Ctrl+B"));
+    brush->setShortcut(tr("Ctrl+P"));
     brush->setCheckable(false);
     connect(brush, &QAction::triggered, canvas, &Canvas::setToolLine);
 
@@ -189,7 +188,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QPixmap palettepix("Icons/icons8-color-palette-64.png");
     QAction *palette = toolbar->addAction(QIcon(palettepix), "&Палитра");
-    palette->setShortcut(tr("Ctrl+P"));
+    palette->setShortcut(tr("Ctrl+C"));
     palette->setCheckable(false);
     connect(palette, &QAction::triggered, this, &MainWindow::setColor);
 
@@ -202,10 +201,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(eraser, &QAction::triggered, canvas, &Canvas::setToolEraser);
 
 
-    /*******************************ЗАЛИВКА*****************************************/
+    /*******************************УДАЛИТЬ ВСЁ************************************/
 
-    QPixmap fillpix("Icons/icons8-fill-color-64.png");
-    toolbar->addAction(QIcon(fillpix), "&Заливка");
 
     QPixmap deleteallpix("Icons/icons8-clean-64.png");
     QAction *deleteall = toolbar->addAction(QIcon(deleteallpix), "&Удалить всё");
@@ -213,7 +210,7 @@ MainWindow::MainWindow(QWidget *parent)
     deleteall->setCheckable(false);
     connect(deleteall, &QAction::triggered, canvas, &Canvas::deleteAll);
 
-     /*************************************ТЕКСТ************************************/
+     /*****************************************ТЕКСТ********************************/
 
     QPixmap textpix("Icons/icons8-text-box-64.png");
     QAction *text = toolbar->addAction(QIcon(textpix), "&Текст");
@@ -221,11 +218,11 @@ MainWindow::MainWindow(QWidget *parent)
     text->setCheckable(false);
     connect(text, &QAction::triggered, canvas, &Canvas::setToolText);
 
-    /*******************************************ДУБЛИРОВАНИЕ************************/
+    /***********************************************ДУБЛИРОВАНИЕ*******************/
 
     QPixmap duplicationpix("Icons/icons8-geometric-flowers-64.png");
     QAction *duplication = toolbar->addAction(QIcon(duplicationpix), "&Дублирование");
-    duplication->setShortcut(tr("Ctrl+D"));
+    duplication->setShortcut(tr("Ctrl+W"));
     duplication->setCheckable(true);
     connect(duplication, &QAction::triggered, canvas, &Canvas::setToolDuplication);
 
@@ -254,7 +251,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QPixmap circlepix("Icons/icons8-circle-64.png");
     QAction *circle = figures->addAction( QIcon(circlepix), "&Окружность");
-    circle->setShortcut(tr("Ctrl+C"));
+    circle->setShortcut(tr("Ctrl+O"));
     circle->setCheckable(false);
     connect(circle, &QAction::triggered, this, &MainWindow::setFigureCircle);
 

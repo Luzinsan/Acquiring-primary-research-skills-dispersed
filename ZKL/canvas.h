@@ -32,6 +32,7 @@ public:
     QList<QList<QLine>> *polylines = new QList<QList<QLine>>; // лист, содержащий все объекты на холсте
     QList<Figure*> figures;
     Figure *figure = nullptr;
+    Figure *background = nullptr;
     bool wasEraser = false;
     bool duplication = false;
     void loadPicture(QString path);
@@ -65,6 +66,7 @@ public slots:
     void setRhomb();//6
     void setTrapezoid();//7
     void setPentagon();//8
+    void setBackground();//9
 
 private:
 

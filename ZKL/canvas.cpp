@@ -14,6 +14,7 @@
 #include <QFileDialog>
 #include <QFont>
 #include <QGraphicsSimpleTextItem>
+#include <QBrush>
 
 
 
@@ -67,7 +68,10 @@ void Canvas::savePicture(QString path)
         image.fill(Qt::transparent);
         QPainter _painter(&image);
         this->render(&_painter);
+        background->~Figure();
+        background = nullptr;
         image.save(file);
+
 
    /* if (!file.isEmpty()) {
         //const QGraphicsScene *cur = scene();
@@ -164,18 +168,31 @@ void Canvas::setPentagon()
 {
     chosenFigure = 8;
 }
+void Canvas::setBackground()
+{
+    //if(background) delete background;
+    clear();
+    chosenFigure = 9;
+    background =  new Figure(0, 0,
+                             width(), height(),
+                             chosenFigure,
+                             pen);
+    addItem(background);
+}
+
 void Canvas::drowGridLines()
 {
-    clear();
-    QPen dash = pen;
-    widthGrid = pen.width();
+    //if(background) background->setEnabled(false);
+   //clear();
+   // background->setEnabled(true);
+    QPen background_pen = pen;
+    widthGrid = pen.width()+1;
     pen.setWidth(1);
-    //pen.setCosmetic(true);
     for(int i = 0; i < this->height(); i += widthGrid)
         this->addLine(0, i, width(), i, pen);
-    pen = dash;
-
+    pen.setWidth(background_pen.width());
 }
+
 /*void Canvas::copySceneAsIMG()
 {
     this->clearSelection();                                                  // Selections would also render to the file
