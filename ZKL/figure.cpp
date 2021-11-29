@@ -1,33 +1,15 @@
 #include "figure.h"
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsItem>
-#include "canvas.h"
-#include <QPen>
-#include <QSize>
-#include <QPainterPath>
-#include <QTextOption>
-#include <QInputDialog>
-#include <QRadialGradient>
+#include <QLinearGradient>
+#include <QBrush>
+#include <iostream>
 
-
-Figure::Figure(int _x1, int _y1, int _x2, int _y2, int _chosenFigure, QPen _pen) :
-    QGraphicsItem(), chosenFigure{_chosenFigure}, x1{_x1}, y1{_y1}, x2{_x2}, y2{_y2}, pen{_pen}
-{
-    //setFlag(ItemIsMovable);
-    //setFlag(ItemIsSelectable);
-   // setFlag(ItemIsPanel);
-    //setFlag(ItemIsFocusScope);
-
-    //setFlag(ItemIsFocusable);
-
-}
-Figure::~Figure()
-{
-}
+Figure::Figure(qreal _x1, qreal _y1, qreal _x2, qreal _y2, int _chosenFigure, QPen _pen, bool _gradient, bool _fillPath)
+    : x1{_x1}, y1{_y1}, x2{_x2}, y2{_y2}, chosenFigure{_chosenFigure}, pen{_pen}, gradient{_gradient}, fillPath{_fillPath} {}
+Figure::~Figure(){}
 
 QRectF Figure::boundingRect() const
 {
-    qreal penWidth = this->pen.widthF();
+    qreal penWidth = this->pen.widthF()+3;
     QRectF rect(x1, y1, x2-x1, y2-y1);
     if(rect.width()>0 && rect.height()>0)
         rect.setRect(x1-penWidth,
@@ -44,121 +26,139 @@ QRectF Figure::boundingRect() const
 }
 
 
+void Figure::swap(qreal *a, qreal *b)
+{
+    qreal temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
 void Figure::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->setPen(pen);
-    QRectF rect = boundingRect();
+
+    if(gradient)
+    {
+        linearGrad = QLinearGradient(x1,y1,x2,y2);
+        linearGrad.setColorAt(0, QColor(0,255,255,100));
+        linearGrad.setColorAt(0.5, QColor(120,60,255,150));
+        linearGrad.setColorAt(1, QColor(17,127,200,255));
+        linearGrad.setSpread(QGradient::ReflectSpread);
+    }
+    //if(chosenFigure == 1)
+      //  fillPath = false;
+
+    if(fillPath)
+        if(gradient)
+        {
+            painter->setBrush(linearGrad);
+           // painter->setPen(Qt::black);
+            painter->setPen(QPen(QBrush(linearGrad), pen.width(), pen.style(), pen.capStyle() ));
+        }
+        else
+        {
+            painter->setBrush(pen.brush());
+            painter->setPen(pen);
+        }
+    else
+        if(gradient) painter->setPen(QPen(QBrush(linearGrad), pen.width(), pen.style(), pen.capStyle() ));
+        else         painter->setPen(pen);
+
     switch(chosenFigure)
     {
-       case 1://void Canvas::drawLine()
-            painter->drawLine(x1, y1, x2, y2);
-            break;
-       case 2: //void Canvas::drawRectangle()
-            painter->drawRect(rect);
-            //painter->fillRect(rect, pen.color());
-            break;
-       case 3: //void Canvas::drawCircle()
-            painter->drawEllipse(rect);
-            break;
-       case 4://void Canvas::drawTriangle()
-            painter->drawLine(x1, y2, (x1 + x2) / 2, y1);
-            painter->drawLine(x2, y2, (x1 + x2) / 2, y1);
-            painter->drawLine(x1, y2, x2, y2);
-            break;
-       case 5://void Canvas::drawTriangleRectangular()
-            painter->drawLine(x1, y2, x1, y1);
-            painter->drawLine(x1, y2, x2, y2);
-            painter->drawLine(x1, y1, x2, y2);
-            break;
-        case 6:// void Canvas::drawRhomb()
-            qreal cW, cH;
-            if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
-                cW = abs((abs(x1) + abs(x2))) / 2 + x1;
-            else
-                cW = abs((abs(x2) - abs(x1))) / 2 + x1;
-            if ((y1 >= 0  && y2 <= 0) || (y1 <= 0 && y2 >= 0))
-                cH = abs((abs(y1) + abs(y2))) / 2 + y1;
-            else
-                cH = abs((abs(y2) - abs(y1))) / 2 + y1;
-            painter->drawLine(x1, cH, cW, y1);
-            painter->drawLine(cW, y1, x2, cH);
-            painter->drawLine(x2, cH, cW, y2);
-            painter->drawLine(cW, y2, x1, cH);
-            break;
-        case 7: //void Canvas::drawTrapezoid()
-           { qreal len, coeff = 0.25;
-            if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
-                len = (abs(x1)+abs(x2)) * coeff;
-            else
-                len = (abs(x2) - abs(x1)) * coeff;
-             painter->drawLine(x1, y2, x2, y2);
-             painter->drawLine(x1, y2, x1 + len, y1);
-             painter->drawLine(x1 + len, y1, x2 - len, y1);
-             painter->drawLine(x2 - len, y1, x2, y2);
-            break;
-         }
-        case 8: //void Canvas::drawPentagon()
-         {
-            qreal shift, uShift, coeff = 0.25, uCoeff = 0.35;
-            qreal cW;
-
-            if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
-                cW = abs((abs(x1) + abs(x2))) / 2 + x1;
-            else
-                cW = abs((abs(x2) - abs(x1))) / 2 + x1;
-
-            if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
-                shift = ((abs(x1) + abs(x2))) * coeff;
-            else shift = abs((abs(x2) - abs(x1))) * coeff;
-
-            if ((y1 >= 0  && y2 <= 0) || (y1 <= 0 && y2 >= 0))
-                uShift = abs((abs(y1) + abs(y2))) * uCoeff;
-            else uShift = abs((abs(y2) - abs(y1))) * uCoeff;
-
-            painter->drawLine(x1 + shift, y2, x2 - shift, y2);
-            painter->drawLine(x2 - shift, y2, x2, y1 + uShift);
-            painter->drawLine(x2, y1 + uShift, cW, y1);
-            painter->drawLine(cW, y1, x1, y1 + uShift);
-            painter->drawLine(x1, y1 + uShift, x1 + shift, y2);
-            break;
+    case 1:// линия
+        painter->drawLine(x1, y1, x2, y2);
+        break;
+    case 2: // прямоугольник
+        painter->drawRect(x1, y1, x2-x1, y2-y1);
+        //painter->fillRect(rect, pen.color());
+        break;
+    case 3: // круг/окружность
+        painter->drawEllipse(x1, y1, x2-x1, y2-y1);
+        break;
+    case 4:// треугольник
+    {
+        QPointF points[3] = {QPoint(x1,y2), QPoint((x1 + x2) / 2, y1), QPoint(x2, y2)};
+        painter->drawPolygon(points, 3);
+        break;
+    }
+    case 5:// прямоугольный треугольник
+    {
+        QPointF points[3] = {QPoint(x1, y1), QPoint(x1, y2), QPoint(x2, y2)};
+        painter->drawPolygon(points, 3);
+        break;
+    }
+    case 6:// ромб
+    {
+        if (x2 < x1 && y2 < y1)
+        {
+            swap(&x1, &x2);
+            swap(&y1, &y2);
         }
-        case 9:
-            QRadialGradient radialGrad(QPointF(x2/2, y2/2),
-                                               y2+30);
-            radialGrad.setColorAt(0, QColor("#00ffff"));
-            radialGrad.setColorAt(0.5, QColor("#22aaff"));
-            radialGrad.setColorAt(1, QColor("#107090"));
-            radialGrad.setSpread(QGradient::ReflectSpread);
-            radialGrad.setFocalPoint(x1,y1);
+        else if (x2 < x1)
+            swap(&x1, &x2);
+        else if (y2 < y1)
+            swap(&y2, &y1);
 
-            painter->fillRect(x1,y1, x2, y2, radialGrad);
-            break;
+        qreal cW, cH;
+        if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
+            cW = abs((abs(x1) + abs(x2))) / 2 + x1;
+        else
+            cW = abs((abs(x2) - abs(x1))) / 2 + x1;
+        if ((y1 >= 0  && y2 <= 0) || (y1 <= 0 && y2 >= 0))
+            cH = abs((abs(y1) + abs(y2))) / 2 + y1;
+        else
+            cH = abs((abs(y2) - abs(y1))) / 2 + y1;
+
+        QPointF points[4] = {QPoint(x1, cH), QPoint(cW, y1), QPoint(x2, cH), QPoint(cW, y2)};
+        painter->drawPolygon(points, 4);
+        break;
+    }
+    case 7: // трапеция
+    {
+        qreal len, coeff = 0.25;
+        if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
+            len = (abs(x1)+abs(x2)) * coeff;
+        else
+            len = (abs(x2) - abs(x1)) * coeff;
+
+        QPointF points[4] = {QPoint(x1, y2), QPoint(x1 + len, y1), QPoint(x2 - len, y1), QPoint(x2, y2)};
+        painter->drawPolygon(points, 4);
+        break;
+    }
+    case 8: // пятиугольник
+    {
+        if (x2 < x1 && y2 < y1)
+        {
+            swap(&x1, &x2);
+            swap(&y1, &y2);
+        }
+        else if (x2 < x1)
+            swap(&x1, &x2);
+        else if (y2 < y1)
+            swap(&y2, &y1);
+
+        qreal shift, uShift, coeff = 0.25, uCoeff = 0.35, cW;
+
+        if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
+            cW = abs((abs(x1) + abs(x2))) / 2 + x1;
+        else
+            cW = abs((abs(x2) - abs(x1))) / 2 + x1;
+
+        if ((x1 >= 0  && x2 <= 0) || (x1 <= 0 && x2 >= 0))
+            shift = ((abs(x1) + abs(x2))) * coeff;
+        else shift = abs((abs(x2) - abs(x1))) * coeff;
+
+        if ((y1 >= 0  && y2 <= 0) || (y1 <= 0 && y2 >= 0))
+            uShift = abs((abs(y1) + abs(y2))) * uCoeff;
+        else uShift = abs((abs(y2) - abs(y1))) * uCoeff;
+
+        QPointF points[5] = {QPoint(x1 + shift, y2), QPoint(x2 - shift, y2), QPoint(x2, y1 + uShift),
+                             QPoint(cW, y1), QPoint(x1, y1 + uShift)};
+        painter->drawPolygon(points, 5);
+
+        break;
+    }
     }
 }
-
-
-
-void Figure::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    wasPressed = true;
-    update();
-    this->setCursor(QCursor(Qt::ClosedHandCursor));
-    QGraphicsItem::mousePressEvent(event);
-}
-
-void Figure::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-    this->setPos(mapToScene(event->pos()));
-}
-
-void Figure::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    wasPressed = false;
-    update();
-    this->setCursor(QCursor(Qt::ArrowCursor));
-    QGraphicsItem::mouseReleaseEvent(event);
-}
-
-

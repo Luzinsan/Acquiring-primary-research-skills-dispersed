@@ -1,47 +1,32 @@
 #ifndef FIGURE_H
 #define FIGURE_H
-//#include "canvas.h"
 #include <QObject>
-#include <QWidget>
 #include <QGraphicsItem>
-#include <QPainter>
-#include <QPoint>
 #include <QPen>
-#include <QGraphicsSceneMouseEvent>
-#include <QDebug>
-#include <QCursor>
 #include <QRectF>
-#include <QList>
+#include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QList>
+#include <QGraphicsSceneMouseEvent>
+
 
 class Figure :  public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
 
-     Figure(int x1=0, int y1=0, int x2=0, int y2=0, int chosenFigure=0, QPen pen = QPen(Qt::black));
+     Figure(qreal x1=0, qreal y1=0, qreal x2=0, qreal y2=0, int chosenFigure=0,QPen pen = QPen(Qt::black), bool gradient = false, bool fillPath = false);
+     Q_INTERFACES(QGraphicsItem);
      QRectF boundingRect() const override;
      void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     ~Figure();
-
-signals:
-
 private:
+    qreal x1=0,y1=0,x2=1,y2=1;
     int chosenFigure = 0;
-    int x1=0,x2=1,y1=0,y2=1;
-
     QPen pen;
-    bool wasPressed = false;
+    bool gradient, fillPath;
 
-    QGraphicsItem *item;
-    QList<QGraphicsItem> *list_items;
-
-private slots:
-
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
+    void swap(qreal *a, qreal *b);
+    QLinearGradient linearGrad;
 };
-
 #endif // FIGURE_H

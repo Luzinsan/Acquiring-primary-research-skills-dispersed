@@ -1,13 +1,7 @@
 #include "mainwindow.h"
-
-//#include "feedback.h"
-
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
-#include <QColor>
-#include <QPalette>
-#include <QIcon>
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +10,7 @@ int main(int argc, char *argv[])
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
-        const QString baseName = "ZKL_" + QLocale(locale).name();
+        const QString baseName = "XPainter_" + QLocale(locale).name();
         if (translator.load(":/i18n/" + baseName)) {
             app.installTranslator(&translator);
             break;
