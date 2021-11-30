@@ -4,7 +4,7 @@
 #define   Version    "0.0.1"
 ; Фирма-разработчик
 #define   Publisher  "ZKL"
-; Сафт фирмы разработчика
+; Сайт фирмы разработчика
 #define   URL        "https://github.com/Luzinsan/Acquiring-primary-research-skills-dispersed"
 ; Имя исполняемого модуля
 #define   ExeName    "XPainter.exe"
