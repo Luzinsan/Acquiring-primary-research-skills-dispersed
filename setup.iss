@@ -1,21 +1,21 @@
-; Имя приложения
+; РРјСЏ РїСЂРёР»РѕР¶РµРЅРёСЏ
 #define   Name       "XPainter"
-; Версия приложения
+; Р’РµСЂСЃРёСЏ РїСЂРёР»РѕР¶РµРЅРёСЏ
 #define   Version    "0.0.1"
-; Фирма-разработчик
+; Р¤РёСЂРјР°-СЂР°Р·СЂР°Р±РѕС‚С‡РёРє
 #define   Publisher  "ZKL"
-; Сафт фирмы разработчика
+; РЎР°С„С‚ С„РёСЂРјС‹ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєР°
 #define   URL        "https://github.com/Luzinsan/Acquiring-primary-research-skills-dispersed"
-; Имя исполняемого модуля
+; РРјСЏ РёСЃРїРѕР»РЅСЏРµРјРѕРіРѕ РјРѕРґСѓР»СЏ
 #define   ExeName    "XPainter.exe"
 
 [Setup]
 
-; Уникальный идентификатор приложения, 
-;сгенерированный через Tools -> Generate GUID
+; РЈРЅРёРєР°Р»СЊРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РїСЂРёР»РѕР¶РµРЅРёСЏ, 
+;СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Р№ С‡РµСЂРµР· Tools -> Generate GUID
 AppId={{D8527779-796C-4391-8CE1-44DD996934AD}
 
-; Прочая информация, отображаемая при установке
+; РџСЂРѕС‡Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ, РѕС‚РѕР±СЂР°Р¶Р°РµРјР°СЏ РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ
 AppName={#Name}
 AppVersion={#Version}
 AppPublisher={#Publisher}
@@ -23,19 +23,19 @@ AppPublisherURL={#URL}
 AppSupportURL={#URL}
 AppUpdatesURL={#URL}
 
-; Путь установки по-умолчанию
+; РџСѓС‚СЊ СѓСЃС‚Р°РЅРѕРІРєРё РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ
 DefaultDirName={pf}\{#Name}
-; Имя группы в меню "Пуск"
+; РРјСЏ РіСЂСѓРїРїС‹ РІ РјРµРЅСЋ "РџСѓСЃРє"
 DefaultGroupName={#Name}
 
-; Каталог, куда будет записан собранный setup и имя исполняемого файла
+; РљР°С‚Р°Р»РѕРі, РєСѓРґР° Р±СѓРґРµС‚ Р·Р°РїРёСЃР°РЅ СЃРѕР±СЂР°РЅРЅС‹Р№ setup Рё РёРјСЏ РёСЃРїРѕР»РЅСЏРµРјРѕРіРѕ С„Р°Р№Р»Р°
 OutputDir=U:\XPainter-setup
 OutputBaseFileName=XPainter-setup
 
-; Файл иконки
+; Р¤Р°Р№Р» РёРєРѕРЅРєРё
 SetupIconFile=U:\ProjectQt\for_build\icons8_impossible_shapes_64_8PK_icon.ico
 
-; Параметры сжатия
+; РџР°СЂР°РјРµС‚СЂС‹ СЃР¶Р°С‚РёСЏ
 Compression=lzma
 SolidCompression=yes
 
@@ -43,15 +43,15 @@ SolidCompression=yes
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"; LicenseFile: "U:\ProjectQt\build-ZKL-Desktop_Qt_5_13_2_MinGW_32_bit-Release\release\Manual\About.txt"
 
 [Tasks]
-; Создание иконки на рабочем столе
+; РЎРѕР·РґР°РЅРёРµ РёРєРѕРЅРєРё РЅР° СЂР°Р±РѕС‡РµРј СЃС‚РѕР»Рµ
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
 
-; Исполняемый файл
+; РСЃРїРѕР»РЅСЏРµРјС‹Р№ С„Р°Р№Р»
 Source: "U:\ProjectQt\build-ZKL-Desktop_Qt_5_13_2_MinGW_32_bit-Release\release\XPainter.exe"; DestDir: "{app}"; Flags: ignoreversion
 
-; Прилагающиеся ресурсы
+; РџСЂРёР»Р°РіР°СЋС‰РёРµСЃСЏ СЂРµСЃСѓСЂСЃС‹
 Source: "U:\ProjectQt\build-ZKL-Desktop_Qt_5_13_2_MinGW_32_bit-Release\release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
