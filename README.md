@@ -22,4 +22,4 @@
 - Лузинсан Анастасия Александровна, студентка каф. АСУ, гр. 430-2. Занималась разработкой класса Canvas, а также маркетинговыми исследованиями в области графических редакторов.
 
 Ссылка на Google Drive с файлом презентации: 
-#  https://docs.google.com/presentation/d/19FDPxlJ3vjfNVgL50gSO2MOreLcXS-Nk/edit?usp=sharing&ouid=113454717130905808159&rtpof=true&sd=true
+https://drive.google.com/drive/folders/1woG6cB0T-trXT4_DHtNkjv6_pQt6dt_C?usp=sharing
